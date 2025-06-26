@@ -130,7 +130,12 @@ function App() {
   };
 
   const formatPrice = (price: number) => {
-    return `$${price.toFixed(2)}`;
+    // Formatear el número con comas para separadores de miles
+    const formattedNumber = price.toLocaleString('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    return `$${formattedNumber}`;
   };
 
   // Función para limpiar todo el presupuesto
