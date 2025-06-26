@@ -116,6 +116,18 @@ body {
   border: 2px solid #d1fae5;
 }
 
+/* Edit Material Form */
+.edit-form {
+  max-width: 1200px;
+  margin: 0 auto 2rem;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  border: 2px solid #fde68a;
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+}
+
 .form-title {
   font-size: 1.25rem;
   font-weight: 600;
@@ -172,8 +184,34 @@ body {
   transition: all 0.3s ease;
 }
 
-.btn-primary:hover {
+.btn-primary:hover:not(:disabled) {
   background: #059669;
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  background: #9ca3af;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn-primary.form-ready {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  animation: pulse-ready 2s infinite;
+}
+
+@keyframes pulse-ready {
+  0% {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
+  50% {
+    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5);
+    transform: translateY(-2px);
+  }
+  100% {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  }
 }
 
 .btn-secondary {
@@ -421,6 +459,30 @@ body {
 .remove-btn:hover {
   background: #fef2f2;
   color: #dc2626;
+  transform: scale(1.1);
+}
+
+.material-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edit-btn {
+  background: none;
+  border: none;
+  color: #f59e0b;
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+  background: #fef3c7;
+  color: #d97706;
+  transform: scale(1.1);
 }
 
 /* Storage status indicator */
@@ -495,8 +557,17 @@ body {
   transform: scale(1.05);
 }
 
-/* Responsive logo adjustments */
+/* Responsive Design */
 @media (max-width: 768px) {
+  .app {
+    padding: 1rem 0.5rem;
+  }
+  
+  .header {
+    padding: 1.5rem;
+    border-radius: 12px;
+  }
+  
   .header-content {
     flex-direction: column;
     text-align: center;
@@ -526,24 +597,198 @@ body {
     font-size: 2.5rem;
   }
   
+  /* Mobile-friendly button container */
   .buttons-container {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
+    gap: 0.75rem;
+    width: 100%;
+  }
+  
+  .btn-add, .btn-export, .btn-danger {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem;
+    font-size: 1rem;
+  }
+  
+  .storage-status {
+    text-align: center;
+    justify-content: center;
+  }
+  
+  /* Mobile-optimized add form */
+  .add-form {
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 0 0.5rem 2rem;
+  }
+  
+  /* Mobile-optimized edit form */
+  .edit-form {
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin: 0 0.5rem 2rem;
+  }
+  
+  .form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    align-items: stretch;
+  }
+  
+  .form-group {
+    width: 100%;
+  }
+  
+  .form-input {
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 8px;
+  }
+  
+  .form-buttons {
+    flex-direction: column;
+    gap: 0.75rem;
+    width: 100%;
+  }
+  
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    border-radius: 8px;
+  }
+  
+  /* Materials container mobile adjustments */
+  .materials-container {
+    border-radius: 12px;
+    margin: 0 0.5rem;
+  }
+  
+  .materials-header {
+    padding: 1.5rem;
+  }
+  
+  .material-item {
+    padding: 1.5rem;
   }
   
   .material-content {
     flex-direction: column;
     align-items: stretch;
+    gap: 1.5rem;
+  }
+  
+  .material-info {
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .material-details h3 {
+    font-size: 1.125rem;
   }
   
   .material-controls {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+  
+  .quantity-control {
     justify-content: space-between;
-    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .quantity-input-group {
+    min-width: 140px;
+  }
+  
+  .material-total {
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  
+  .material-actions {
+    gap: 0.75rem;
+  }
+  
+  .edit-btn, .remove-btn {
+    font-size: 1.125rem;
+    padding: 0.625rem;
+  }
+  
+  .total-display {
+    flex: 1;
+    min-width: auto;
+    font-size: 1.125rem;
+    padding: 0.75rem 1rem;
+  }
+  
+  .summary-footer {
+    padding: 1.5rem;
   }
   
   .summary-content {
     flex-direction: column;
     text-align: center;
+    gap: 1rem;
+  }
+  
+  .summary-total-amount {
+    font-size: 1.75rem;
+  }
+}
+
+/* Extra small screens (phones in portrait) */
+@media (max-width: 480px) {
+  .app {
+    padding: 0.5rem 0.25rem;
+  }
+  
+  .header {
+    padding: 1rem;
+    margin: 0 0.25rem 1rem;
+  }
+  
+  .header-title {
+    font-size: 1.75rem;
+  }
+  
+  .total-amount {
+    font-size: 2rem;
+  }
+  
+  .add-form {
+    padding: 1rem;
+    margin: 0 0.25rem 1rem;
+  }
+  
+  .edit-form {
+    padding: 1rem;
+    margin: 0 0.25rem 1rem;
+  }
+  
+  .form-input {
+    padding: 0.875rem;
+  }
+  
+  .materials-container {
+    margin: 0 0.25rem;
+  }
+  
+  .material-item {
+    padding: 1rem;
+  }
+  
+  .quantity-input-group {
+    min-width: 120px;
+  }
+  
+  .total-display {
+    font-size: 1rem;
+    padding: 0.625rem 0.75rem;
   }
 }
 

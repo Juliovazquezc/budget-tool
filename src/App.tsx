@@ -44,6 +44,11 @@ function App() {
   });
 
   const [showAddForm, setShowAddForm] = useState(false);
+  const [editingMaterial, setEditingMaterial] = useState<Material | null>(null);
+  const [editForm, setEditForm] = useState({
+    name: "",
+    price: 0,
+  });
 
   // Guardar en localStorage cada vez que cambie materials
   useEffect(() => {
@@ -108,7 +113,7 @@ function App() {
           name: newMaterial.name.trim(),
           price: newMaterial.price,
           quantity: 1,
-          isSelected: false,
+          isSelected: true, // Nuevo material se selecciona automáticamente
         },
       ]);
       setNewMaterial({ name: "", price: 0 });
@@ -118,6 +123,62 @@ function App() {
 
   const removeMaterial = (id: number) => {
     setMaterials(materials.filter((material) => material.id !== id));
+  };
+
+  // Funciones para editar materiales
+  const startEditMaterial = (material: Material) => {
+    setEditingMaterial(material);
+    setEditForm({
+      name: material.name,
+      price: material.price,
+    });
+  };
+
+  const cancelEditMaterial = () => {
+    setEditingMaterial(null);
+    setEditForm({ name: "", price: 0 });
+  };
+
+  const saveEditMaterial = () => {
+    if (editingMaterial && editForm.name.trim() && editForm.price > 0) {
+      setMaterials(
+        materials.map((material) =>
+          material.id === editingMaterial.id
+            ? {
+                ...material,
+                name: editForm.name.trim(),
+                price: editForm.price,
+              }
+            : material
+        )
+      );
+      cancelEditMaterial();
+    }
+  };
+
+  // Función para manejar Enter en el formulario de agregar
+  const handleAddFormKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && newMaterial.name.trim() && newMaterial.price > 0) {
+      e.preventDefault();
+      addMaterial();
+    }
+  };
+
+  // Función para manejar Enter en el formulario de editar
+  const handleEditFormKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && editForm.name.trim() && editForm.price > 0) {
+      e.preventDefault();
+      saveEditMaterial();
+    }
+  };
+
+  // Funciones para verificar si los formularios están completos
+  const isAddFormValid = () => {
+    return newMaterial.name.trim() && newMaterial.price > 0;
+  };
+
+  const isEditFormValid = () => {
+    return editForm.name.trim() && editForm.price > 0;
   };
 
   const calculateTotal = () => {
@@ -131,9 +192,9 @@ function App() {
 
   const formatPrice = (price: number) => {
     // Formatear el número con comas para separadores de miles
-    const formattedNumber = price.toLocaleString('en-US', {
+    const formattedNumber = price.toLocaleString("en-US", {
       minimumFractionDigits: 2,
-      maximumFractionDigits: 2
+      maximumFractionDigits: 2,
     });
     return `$${formattedNumber}`;
   };
@@ -204,9 +265,6 @@ function App() {
               <img src="/mabe.png" alt="Mabe Logo" className="company-logo" />
               <div>
                 <h1 className="header-title">💰 Presupuesto de Materiales</h1>
-                <p className="header-subtitle">
-                  Gestiona tu presupuesto de construcción
-                </p>
               </div>
             </div>
           </div>
@@ -257,6 +315,7 @@ function App() {
                 onChange={(e) =>
                   setNewMaterial({ ...newMaterial, name: e.target.value })
                 }
+                onKeyDown={handleAddFormKeyDown}
                 className="form-input"
                 placeholder="Ej: Ladrillos"
               />
@@ -274,18 +333,89 @@ function App() {
                     price: parseFloat(e.target.value) || 0,
                   })
                 }
+                onKeyDown={handleAddFormKeyDown}
                 className="form-input"
                 placeholder="0.00"
               />
             </div>
             <div className="form-buttons">
-              <button onClick={addMaterial} className="btn-primary">
-                Agregar
+              <button
+                onClick={addMaterial}
+                className={`btn-primary ${
+                  isAddFormValid() ? "form-ready" : ""
+                }`}
+                disabled={!isAddFormValid()}
+                title={
+                  isAddFormValid()
+                    ? "Presiona Enter o haz clic para agregar"
+                    : "Completa todos los campos"
+                }
+              >
+                Agregar {isAddFormValid() && "⏎"}
               </button>
               <button
                 onClick={() => setShowAddForm(false)}
                 className="btn-secondary"
               >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Material Form */}
+      {editingMaterial && (
+        <div className="edit-form">
+          <h3 className="form-title">✏️ Editar Material</h3>
+          <div className="form-grid">
+            <div className="form-group">
+              <label className="form-label">Nombre del Material</label>
+              <input
+                type="text"
+                value={editForm.name}
+                onChange={(e) =>
+                  setEditForm({ ...editForm, name: e.target.value })
+                }
+                onKeyDown={handleEditFormKeyDown}
+                className="form-input"
+                placeholder="Ej: Ladrillos"
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Precio por Unidad</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                value={editForm.price}
+                onChange={(e) =>
+                  setEditForm({
+                    ...editForm,
+                    price: parseFloat(e.target.value) || 0,
+                  })
+                }
+                onKeyDown={handleEditFormKeyDown}
+                className="form-input"
+                placeholder="0.00"
+              />
+            </div>
+            <div className="form-buttons">
+              <button
+                onClick={saveEditMaterial}
+                className={`btn-primary ${
+                  isEditFormValid() ? "form-ready" : ""
+                }`}
+                disabled={!isEditFormValid()}
+                title={
+                  isEditFormValid()
+                    ? "Presiona Enter o haz clic para guardar"
+                    : "Completa todos los campos"
+                }
+              >
+                Guardar {isEditFormValid() && "⏎"}
+              </button>
+              <button onClick={cancelEditMaterial} className="btn-secondary">
                 Cancelar
               </button>
             </div>
@@ -372,7 +502,7 @@ function App() {
                     </div>
                   </div>
 
-                  {/* Total and Remove button */}
+                  {/* Total and Edit/Remove buttons */}
                   <div className="material-total">
                     <div
                       className={`total-display ${
@@ -384,13 +514,23 @@ function App() {
                         : formatPrice(0)}
                     </div>
 
-                    <button
-                      onClick={() => removeMaterial(material.id)}
-                      className="remove-btn"
-                      title="Eliminar material"
-                    >
-                      🗑️
-                    </button>
+                    <div className="material-actions">
+                      <button
+                        onClick={() => startEditMaterial(material)}
+                        className="edit-btn"
+                        title="Editar material"
+                      >
+                        ✏️
+                      </button>
+
+                      <button
+                        onClick={() => removeMaterial(material.id)}
+                        className="remove-btn"
+                        title="Eliminar material"
+                      >
+                        🗑️
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
